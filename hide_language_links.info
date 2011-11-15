@@ -1,0 +1,5 @@
+name = Hide Language Links
+description = Provides functionality to hide language links for certain roles.
+dependencies[] = locale
+package = Multilanguage
+core = 6.x

@@ -1,0 +1,17 @@
+<?php
+
+/**
+ * @file
+ * (Un)installs the Hide Language Links module.
+ */
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function hide_language_links_uninstall() {
+  drupal_load('module', 'hide_language_links');
+  $variables = array_keys(hide_language_links_variables());
+  foreach ($variables as $variable) {
+    variable_del($variable);
+  }
+}

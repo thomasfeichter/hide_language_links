@@ -1,0 +1,71 @@
+<?php
+
+/**
+ * @file hide_language_links.module
+ */
+
+function hide_language_links_variables() {
+  return array(
+    'hide_language_links_languages' => array(),
+    'hide_language_links_hide_active_language' => 0,
+    'hide_language_links_ignore_active_language' => 0,
+  );
+}
+
+/**
+ * Implementation of hook_menu().
+ */
+function hide_language_links_menu() {
+  $items['admin/settings/hide_language_links'] = array(
+    'title' => 'Hide Language Links settings',
+    'description' => 'Configure the Hide Language Links settings.',
+    'file' => 'hide_language_links.admin.inc',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('hide_language_links_settings'),
+    'access arguments' => array('administer hide_language_links'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+  return $items;
+}
+
+/**
+ * Implementation of hook_perm().
+ */
+function hide_language_links_perm() {
+  return array(
+    'view hidden language links',
+    'administer hide_language_links',
+  );
+}
+
+/**
+ * implementation of hook_translation_link_alter()
+ */
+function hide_language_links_translation_link_alter(&$links, $path) {
+  global $language;
+
+  $hide_active_language = variable_get('hide_language_links_hide_active_language');
+  // Delete language link for the active language for all users
+  if ($hide_active_language && isset($links[$language->language])) {
+    unset($links[$language->language]);
+  }
+
+  // Ignore specific language settings for users with the 'view hidden language links' access right
+  if (user_access('view hidden language links')) {
+    return;
+  }
+
+  $hidden_languages = variable_get('hide_language_links_languages', array());
+  $ignore_active_language = variable_get('hide_language_links_ignore_active_language');
+  foreach ($hidden_languages as $langcode) {
+    // Don't delete the link for active language if enabled at the settings page
+    if ($ignore_active_language && $langcode == $language->language) {
+      continue;
+    }
+    // Delete specific language links
+    if (isset($links[$langcode])) {
+      unset($links[$langcode]);
+    }
+  }
+  return;
+}
