@@ -45,7 +45,7 @@ function hide_language_links_perm() {
 function hide_language_links_translation_link_alter(&$links, $path) {
   global $language;
 
-  $hide_active_language = variable_get('hide_language_links_hide_active_language');
+  $hide_active_language = variable_get('hide_language_links_hide_active_language', NULL);
   // Delete language link for the active language for all users
   if ($hide_active_language && isset($links[$language->language])) {
     unset($links[$language->language]);
@@ -57,7 +57,7 @@ function hide_language_links_translation_link_alter(&$links, $path) {
   }
 
   $hidden_languages = variable_get('hide_language_links_languages', array());
-  $ignore_active_language = variable_get('hide_language_links_ignore_active_language');
+  $ignore_active_language = variable_get('hide_language_links_ignore_active_language', NULL);
   foreach ($hidden_languages as $langcode) {
     // Don't delete the link for active language if enabled at the settings page
     if ($ignore_active_language && $langcode == $language->language) {
@@ -81,7 +81,7 @@ function hide_language_links_link_alter(&$links, $node, $comment = NULL) {
     return;
   }
   $hidden_languages = variable_get('hide_language_links_languages', array());
-  $ignore_active_language = variable_get('hide_language_links_ignore_active_language');
+  $ignore_active_language = variable_get('hide_language_links_ignore_active_language', NULL);
   foreach ($hidden_languages as $langcode) {
     // Don't delete the link for active language if enabled at the settings page
     if ($ignore_active_language && $langcode == $language->language) {
